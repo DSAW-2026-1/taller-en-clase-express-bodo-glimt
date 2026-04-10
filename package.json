@@ -1,0 +1,13 @@
+{
+  "name": "taller-en-clase-expres-bodo-glimt",
+  "version": "1.0.0",
+  "description": "API basica con login y autorizacion por roles",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
