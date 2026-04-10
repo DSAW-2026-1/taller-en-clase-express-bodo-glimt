@@ -69,6 +69,64 @@ app.get("/request/:role", authenticate, (req, res) => {
 
   return res.status(401).json({ message: "Youre not allowed to do this" });
 });
+app.get("/", (req, res) => {
+  res.status(200).send(`
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>Auth API Tester</title>
+      </head>
+      <body style="font-family: Arial; max-width: 700px; margin: 40px auto;">
+        <h1>Auth API Tester</h1>
+        <p>Prueba login y request por rol aquí mismo.</p>
+
+        <h3>1) Login</h3>
+        <select id="user">
+          <option value="ADMIN">ADMIN</option>
+          <option value="USER">USER</option>
+        </select>
+        <button onclick="doLogin()">Login</button>
+        <pre id="loginOut"></pre>
+
+        <h3>2) Request por rol</h3>
+        <select id="role">
+          <option value="ADMIN">ADMIN</option>
+          <option value="USER">USER</option>
+        </select>
+        <button onclick="doRequest()">Request</button>
+        <pre id="reqOut"></pre>
+
+        <script>
+          let token = "";
+
+          async function doLogin() {
+            const u = document.getElementById("user").value;
+            const res = await fetch("/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username: u, password: u })
+            });
+            const data = await res.json();
+            token = data.token || "";
+            document.getElementById("loginOut").textContent =
+              "Status: " + res.status + "\\n" + JSON.stringify(data, null, 2);
+          }
+
+          async function doRequest() {
+            const role = document.getElementById("role").value;
+            const res = await fetch("/request/" + role, {
+              headers: { Authorization: "Bearer " + token }
+            });
+            const data = await res.json();
+            document.getElementById("reqOut").textContent =
+              "Status: " + res.status + "\\n" + JSON.stringify(data, null, 2);
+          }
+        </script>
+      </body>
+    </html>
+  `);
+});
 
 
 module.exports = app;
